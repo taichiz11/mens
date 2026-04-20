@@ -86,7 +86,7 @@ export default async function SchedulePage({
           {schedules && schedules.length > 0 ? (
             <div className="space-y-3">
               {schedules.map((s) => {
-                const t = s.therapists as Record<string, unknown>
+                const t = s.therapists as { id: string; name: string; age: number; height: number; bust_size: string; rank: string; is_new: boolean; photo_url: string }
                 const statusCfg = STATUS_CONFIG[s.status] ?? STATUS_CONFIG.scheduled
                 return (
                   <Link key={s.id} href={`/stores/${id}/therapists/${t.id}`}>
