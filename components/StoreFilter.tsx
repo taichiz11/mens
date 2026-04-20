@@ -3,34 +3,60 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 
 const PREFECTURES = ['東京都', '神奈川県', '埼玉県', '千葉県']
+const TAGS = ['オイル', 'リンパ', 'アロマ', '深夜営業', '個室', 'キャッシュレス']
 
 export default function StoreFilter() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const current = searchParams.get('prefecture') || ''
+  const currentPref = searchParams.get('prefecture') || ''
+  const currentTag = searchParams.get('tag') || ''
 
-  function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const value = e.target.value
+  function updateFilter(key: string, value: string) {
+    const params = new URLSearchParams(searchParams.toString())
     if (value) {
-      router.push(`/?prefecture=${encodeURIComponent(value)}`)
+      params.set(key, value)
     } else {
-      router.push('/')
+      params.delete(key)
     }
+    router.push(`/?${params.toString()}`)
   }
 
   return (
-    <div className="flex gap-3 items-center">
-      <label className="text-sm text-gray-600">都道府県</label>
-      <select
-        value={current}
-        onChange={handleChange}
-        className="border rounded px-3 py-1.5 text-sm"
-      >
-        <option value="">すべて</option>
-        {PREFECTURES.map((pref) => (
-          <option key={pref} value={pref}>{pref}</option>
-        ))}
-      </select>
+    <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4">
+      <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium text-gray-700">都道府県</label>
+          <select
+            value={currentPref}
+            onChange={(e) => updateFilter('prefecture', e.target.value)}
+            className="border rounded px-3 py-1.5 text-sm"
+          >
+            <option value="">すべて</option>
+            {PREFECTURES.map((p) => <option key={p} value={p}>{p}</option>)}
+          </select>
+        </div>
+
+        <div className="flex items-center gap-2 flex-wrap">
+          <label className="text-sm font-medium text-gray-700">施術タイプ</label>
+          <div className="flex flex-wrap gap-1">
+            <button
+              onClick={() => updateFilter('tag', '')}
+              className={`text-xs px-3 py-1 rounded-full border transition ${currentTag === '' ? 'bg-rose-600 text-white border-rose-600' : 'text-gray-600 border-gray-300 hover:border-rose-400'}`}
+            >
+              すべて
+            </button>
+            {TAGS.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => updateFilter('tag', tag)}
+                className={`text-xs px-3 py-1 rounded-full border transition ${currentTag === tag ? 'bg-rose-600 text-white border-rose-600' : 'text-gray-600 border-gray-300 hover:border-rose-400'}`}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
