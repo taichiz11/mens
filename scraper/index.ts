@@ -1,21 +1,25 @@
 import 'dotenv/config'
-import { scrapeHotpepper } from './sites/hotpepper'
+import { scrapeEstheRankingMusashikosugi, importScrapedStores } from './sites/esthe-ranking'
+import { scrapeOfficialSites } from './sites/official-site'
+
+const command = process.argv[2] // 'scrape' | 'import' | 'scrape-official'
 
 async function main() {
-  console.log('=== スクレイピング開始 ===')
-  const stores = await scrapeHotpepper()
+  if (command === 'import') {
+    console.log('=== Supabaseへのインポート開始 ===\n')
+    await importScrapedStores()
+    return
+  }
 
-  console.log('\n=== 取得結果 ===')
-  stores.forEach((s, i) => {
-    console.log(`\n[${i + 1}] ${s.name}`)
-    if (s.address) console.log(`    住所: ${s.address}`)
-    if (s.nearest_station) console.log(`    アクセス: ${s.nearest_station}`)
-    if (s.rating) console.log(`    評価: ${s.rating} (${s.review_count}件)`)
-  })
+  if (command === 'scrape-official') {
+    console.log('=== 公式サイト スクレイピング開始 ===\n')
+    await scrapeOfficialSites()
+    return
+  }
 
-  console.log('\n=== 完了 ===')
-  console.log('結果はSupabaseのscrape_logsテーブルに保存されました。')
-  console.log('内容を確認後、stores/review_summariesテーブルに手動で反映してください。')
+  console.log('=== スクレイピング開始 ===\n')
+  await scrapeEstheRankingMusashikosugi()
+  console.log('\n完了。確認後 `npm run import` でSupabaseに取り込めます。')
 }
 
 main()

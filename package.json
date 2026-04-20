@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "scrape": "tsx --env-file=.env.local scraper/index.ts"
+    "scrape": "tsx --env-file=.env.local scraper/index.ts scrape",
+    "import": "tsx --env-file=.env.local scraper/index.ts import",
+    "scrape-official": "tsx --env-file=.env.local scraper/index.ts scrape-official"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.3",
